@@ -1,0 +1,48 @@
+package Q210;
+
+import java.util.*;
+class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj = new ArrayList<>();
+        int[] indegree = new int[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] p : prerequisites) {
+            adj.get(p[1]).add(p[0]);
+            indegree[p[0]]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        int[] result = new int[numCourses];
+        int index = 0;
+
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            result[index++] = course;
+
+            for (int neighbor : adj.get(course)) {
+                indegree[neighbor]--;
+
+                if (indegree[neighbor] == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        if (index == numCourses) {
+            return result;
+        }
+
+        return new int[0];
+    }
+}
